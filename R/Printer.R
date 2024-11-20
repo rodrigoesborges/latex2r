@@ -25,6 +25,7 @@ AstPrinter = R6::R6Class(
       self$parenthesize(expr$operator$lexeme, expr$left, expr$right)
     },
 
+
     visitGroupingExpr = function(expr) {
       self$parenthesize("group", expr$expression)
     },
@@ -65,7 +66,9 @@ RPrinter = R6::R6Class(
     visitBinaryExpr = function(expr) {
       self$format(mode = "binary", expr)
     },
-
+    visitFunctionBinExpr = function(expr) {
+      paste0(expr$funct$lexeme,"(", expr$first$accept(self), ", ", gsub("[^[:digit:]]","",expr$second$accept(self)), ")")
+    },
     visitUnaryExpr = function(expr) {
       self$format(mode = "unary", expr)
     },

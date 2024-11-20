@@ -49,7 +49,8 @@ KEYWORDS = list(
   '\\tan' = 'TAN',
   '\\sinh' = 'SINH',
   '\\cosh' = 'COSH',
-  '\\tanh' = 'TANH'
+  '\\tanh' = 'TANH',
+  '\\sum' = 'ROLLSUM'
 )
 
 KEYWORDS_LEXEMES = list(
@@ -62,7 +63,8 @@ KEYWORDS_LEXEMES = list(
   'TAN' = 'tan',
   'SINH' = 'sinh',
   'COSH' = 'cosh',
-  'TANH' = 'tanh'
+  'TANH' = 'tanh',
+  'ROLLSUM' = 'data.table::frollsum'
 )
 
 UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH')

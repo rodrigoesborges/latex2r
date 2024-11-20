@@ -37,6 +37,23 @@ Binary = R6::R6Class("Binary",
   )
 )
 
+FunctionBinary = R6::R6Class("FunctionBinary",
+                     inherit = Expr,
+                     public = list(
+                       funct = NULL,
+                       first = NULL,
+                       second = NULL,
+                       initialize = function(funct,first, second) {
+                         self$funct = funct
+                         self$first = first
+                         self$second = second
+                       },
+                       accept = function(visitor) {
+                         visitor$visitFunctionBinExpr(self)
+                       }
+                     )
+)
+
 Unary = R6::R6Class("Unary",
   inherit = Expr,
   public = list(
