@@ -306,7 +306,7 @@ Parser = R6::R6Class("Parser",
       if (self$match('ROLLSUM')) {
         # Kind of a hack. I should use more elegant ways if possible.
         self$consume('UNDERSCORE', "Expect '_' after ROLLSUM.")
-        self$consume('LEFT_BRACE', "Expect '{' after ROLLSUM _.")
+        self$consume('LEFT_BRACE', "Expect '{' after ROLLSUM.")
         expr2 = self$addition()
         self$consume('RIGHT_BRACE', "Expect '}' after expression")
         self$consume('CARET', "Expect '^' between expressions")
