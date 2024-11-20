@@ -50,7 +50,7 @@ KEYWORDS = list(
   '\\sinh' = 'SINH',
   '\\cosh' = 'COSH',
   '\\tanh' = 'TANH',
-  '\\sum' = 'ROLLSUM'
+  '\sum' = 'ROLLSUM'
 )
 
 KEYWORDS_LEXEMES = list(
