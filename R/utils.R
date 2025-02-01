@@ -50,7 +50,8 @@ KEYWORDS = list(
   '\\sinh' = 'SINH',
   '\\cosh' = 'COSH',
   '\\tanh' = 'TANH',
-  '\\bar' = 'MEAN'
+  '\\bar' = 'MEAN',
+  '\\overline' = 'MEAN'
 )
 
 KEYWORDS_LEXEMES = list(
