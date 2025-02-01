@@ -49,8 +49,7 @@ KEYWORDS = list(
   '\\tan' = 'TAN',
   '\\sinh' = 'SINH',
   '\\cosh' = 'COSH',
-  '\\tanh' = 'TANH',
-  '\\bar' = 'MEAN',
+  '\\tanh' = 'TANH'
 )
 
 KEYWORDS_LEXEMES = list(
@@ -63,11 +62,10 @@ KEYWORDS_LEXEMES = list(
   'TAN' = 'tan',
   'SINH' = 'sinh',
   'COSH' = 'cosh',
-  'TANH' = 'tanh',
-  'MEAN' = 'mean'
+  'TANH' = 'tanh'
 )
 
-UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH','MEAN')
+UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH')
 
 pkg_data = list(
   'GREEK_KEYWORDS' = GREEK_KEYWORDS,
