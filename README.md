@@ -3,6 +3,11 @@
 
 # latexr
 
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/rodrigoesborges/latexr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rodrigoesborges/latexr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 The goal of latexr is to translate LaTeX formulas to R code. (Formerly
 known as `latex2r`; the main function is still `latex2r()`.)
 
