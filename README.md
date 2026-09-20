@@ -13,7 +13,7 @@ You can install the development version from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("rodrigoesborges/latex2r")
+devtools::install_github("rodrigoesborges/latexr")
 ```
 
 This is a very young package so it may not work as expected if you try
