@@ -92,6 +92,7 @@ Then: add tests in tests/testthat/, and update the "Supported LaTeX" section of 
 - **`\left` / `\right`**: handled specially in `Scanner$latex_delimiters()`; `(...)`, `\{...\}` and `|...|` (→ `LEFT_ABS`/`RIGHT_ABS`, parsed as `abs()` in `Parser$primary()`) variants are recognized. `RIGHT_ABS` is part of the implicit-multiplication skip set.
 - **Spacing commands are ignored**: `\;`, `\,`, `\:` (Scanner$latex early check), `\quad`, `\qquad` (text lookup in `Scanner$latex()`). They emit no token.
 - **Rolling sum notation is quirky** (kept from the original branch): `\sum_{k}^{anything}{x}` — the `^{...}` group is parsed for notation compatibility but **discarded**; the printer strips all non-digits from the `_` group (`gsub("[^[:digit:]]", "", ...)`), so `k` must be numeric. Emits `data.table::frollsum(x, k)` as a string — `data.table` is NOT a package dependency. Implemented via the `FunctionBinary` AST node (R/Expr.R) handled in `Parser$primary()` and `RPrinter$visitFunctionBinExpr()`.
+- **Spell-check NOTE**: proper nouns flagged by CRAN's aspell pass (e.g. `MathQuill` in DESCRIPTION) are whitelisted via `inst/WORDLIST` (one word per line; honored by R CMD check and by `spelling::spell_check_package()`). Local repro: `Rscript -e 'spelling::spell_check_package(".")'`.
 
 ## Conventions
 

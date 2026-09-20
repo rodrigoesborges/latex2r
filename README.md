@@ -28,7 +28,7 @@ it.
 
 ## Examples
 
-Just some basic funcionality: translate LaTeX to R.
+Just some basic functionality: translate LaTeX to R.
 
 ``` r
 library(latexr)
@@ -73,12 +73,12 @@ that you can use interactively.
 
 ## Supported LaTeX
 
-Only a small subset of LaTeX expressions are suported so far. However,
+Only a small subset of LaTeX expressions are supported so far. However,
 these are enough to define a very wide set of mathematical functions.
 
 ### Greek letters supported
 
-The following greek letters are supported as identifiers (variable
+The following Greek letters are supported as identifiers (variable
 names).
 
 ``` r
@@ -138,7 +138,7 @@ Spacing commands (`\;`, `\,`, `\:`, `\quad`, `\qquad`) are ignored.
 
 A previous version of this package required multiplication to be
 explicit. For example, `xy` would have been understood as an identifier
-called `xy`. Now, all identifiers, except from special ones (greek
+called `xy`. Now, all identifiers, except from special ones (Greek
 letters), are of one character only. If you do `abc^5` it will be
 understood as `a*b*c^5`.
 
