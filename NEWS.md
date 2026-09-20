@@ -1,4 +1,4 @@
-# latexr (development version)
+# latexr 0.3.0
 
 ## Renaming
 
@@ -8,17 +8,38 @@
 
 ## New features
 
-* `\bar{x}` and `\overline{x}` now translate to `mean(x)` (consolidated from the
-  `mean` branch).
-* Rolling sums: `\sum_{k}^{}{x}` translates to `data.table::frollsum(x, k)`
-  (consolidated from the `arithmean`/`rollsumsigma` branches). The exponent group
-  after `^` is parsed for notation compatibility but ignored.
+* Statistical notation: `\bar{x}` and `\overline{x}` translate to `mean(x)`, and
+  `\tilde{x}` translates to `median(x)`.
+* Rolling sums: `\sum_{k}^{}{x}` translates to `data.table::frollsum(x, k)`.
+  The exponent group after `^` is parsed for notation compatibility but ignored.
+* Missing values: `latex2r()` and `latex2fun()` gained an `na.rm` argument. When
+  `TRUE`, calls to `mean()` and `median()` are emitted with `na.rm = TRUE`
+  (`frollsum()` is not affected since it handles missing values differently).
+  The default `FALSE` keeps the output unchanged.
+* Unicode input: `latex2r()` now normalizes the characters commonly emitted by
+  visual formula editors (MathQuill) and plain keyboard input before scanning.
+  Minus signs, `×`, `⋅`, `÷`, Greek letters, and accented vowels such as `ā`, `ã`
+  and `â` become the equivalent LaTeX commands. The new `normalize_mathquill()`
+  function is exported so the mapping can be inspected and reused.
+* New `latex2ast()` function that returns the parsed abstract syntax tree of a
+  formula instead of its R translation, for debugging and tooling.
+* `\ln{x}` translates to `log(x)` (alias of `\log`).
+* Absolute value: `\left|x\right|` translates to `abs(x)`.
+* Spacing commands (`\;`, `\,`, `\:`, `\quad`, `\qquad`) are now ignored
+  instead of raising "Unrecognized latex character".
+
+## Maintenance and fixes
+
 * Fixed a crash when implicit multiplication followed a braced rolling-sum
   operand (e.g. `\sum_{3}^{2}{x}y`).
 * Fixed `stop_custom()` conditions not inheriting from class `"error"`, which made
   errors raised by `latex2r()` impossible to catch with `tryCatch(error = ...)` and
   aborted non-interactive sessions. `tryCatch(..., class = "latex2r.error")` and
   `expect_error(class = "latex2r.error")` now work as documented.
+* The parser no longer drops residual tokens after a complete expression
+  (e.g. the trailing `}` in `\sqrt{x}}`); it now raises a `latex2r.error`.
+* `latex2fun()` no longer mistakes named call arguments for assignments, so
+  formulas translating to `log(x, base = 2)` (or using `na.rm = TRUE`) work.
 
 ## Authors
 

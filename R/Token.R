@@ -30,10 +30,14 @@ Token = R6::R6Class("Token",
 
 
 
-#' Print Token
+#' Print a Token object.
 #'
+#' @param x A `Token` object.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @return The string representation of the token, invisibly.
 #' @export
-print.Token <- function(x) {
+print.Token <- function(x, ...) {
   str <- x$str()
   cat(str)
   invisible(str)

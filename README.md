@@ -92,30 +92,38 @@ latexr:::get_pkg_data('GREEK_KEYWORDS')
 
 You can use the following operators
 
-  - Unary:
-      - `+` and `-`.
-  - Binary:
-      - `+`, `-`, `*`, `/`, `^`, and `_`.
-  - Grouping:
-      - `{...}`, `\left{...\right}`, `(...)`, and `\left(...\right)`.
+- Unary:
+  - `+` and `-`.
+- Binary:
+  - `+`, `-`, `*`, `/`, `^`, and `_`.
+- Grouping:
+  - `{...}`, `\left{...\right}`, `(...)`, and `\left(...\right)`.
+- Absolute value:
+  - `\left|x\right|`.
 
 And the following functions
 
-  - Unary:
-      - `\sqrt`, `\log`, `\sin`, `\cos`, `\tan`, `\cosh`, `\sinh`, and
-        `\tanh`.
-  - Binary:
-      - `\frac{...}{...}`, `\cdot`, and `\times`.
+- Unary:
+  - `\sqrt`, `\log`, `\ln`, `\sin`, `\cos`, `\tan`, `\cosh`, `\sinh`,
+    and `\tanh`.
+  - Statistical: `\bar{x}` and `\overline{x}` (mean), and `\tilde{x}`
+    (median).
+- Binary:
+  - `\frac{...}{...}`, `\cdot`, and `\times`.
+  - Rolling sum: `\sum_{k}^{}{x}` translates to
+    `data.table::frollsum(x, k)`.
+
+Spacing commands (`\;`, `\,`, `\:`, `\quad`, `\qquad`) are ignored.
 
 #### Notes
 
-  - The operator `_` is used to represent subscripts. While you can do
-    \(5_2\) in LaTeX, it is not allowed in the package since a subscript
-    on a number does not make sense.  
-    Only variable names (such as `x` or `\\pi`) can have subscripts.
-  - In latex you can write `\sqrt[p]{x}` to represent the p-th root.
-    However this is not allowed in this package (at least for now). To
-    represent a p-th root you can use `x^{1/p}`.
+- The operator `_` is used to represent subscripts. While you can do
+  $5_2$ in LaTeX, it is not allowed in the package since a subscript on
+  a number does not make sense.  
+  Only variable names (such as `x` or `\\pi`) can have subscripts.
+- In latex you can write `\sqrt[p]{x}` to represent the p-th root.
+  However this is not allowed in this package (at least for now). To
+  represent a p-th root you can use `x^{1/p}`.
 
 ### Some remarks
 
@@ -134,11 +142,11 @@ as `*`, `\times` or `\cdot`.
 
 #### Explicit grouping
 
-Although something like `\sin5` renders as \(\sin5\) and we all
-understand this means sine of 5, we require explicit grouping with `{}`
-or `()` to avoid ambiguity in the function argument. What if I write
-`\sin5a`? Does it mean a times the sine of 5 or the sine of 5 times a?
-Explicit grouping is a simple solution to eliminate this ambiguity.
+Although something like `\sin5` renders as $\sin5$ and we all understand
+this means sine of 5, we require explicit grouping with `{}` or `()` to
+avoid ambiguity in the function argument. What if I write `\sin5a`? Does
+it mean a times the sine of 5 or the sine of 5 times a? Explicit
+grouping is a simple solution to eliminate this ambiguity.
 
 #### Special treatment for some characters
 
@@ -169,24 +177,92 @@ But note that complex numbers are not supported (yet?).
 
 If you write `\\log(x)` it will be interpreted as the natural logarithm
 of `x`. If you write `\\log_n(x)` it will be interpreted as the
-logarithm of `x` with base `n`.
+logarithm of `x` with base `n`. The alias `\\ln(x)` also works.
 
 ``` r
 latex2r("\\log(x + 1)")
 #> [1] "log(x + 1)"
 latex2r("\\log_2(x + 1)")
 #> [1] "log(x + 1, base = 2)"
+latex2r("\\ln(x + 1)")
+#> [1] "log(x + 1)"
+```
+
+#### Statistical notation
+
+`\\bar{x}` and `\\overline{x}` translate to `mean(x)`, and `\\tilde{x}`
+translates to `median(x)`. Since real data often contains missing
+values, both accept `na.rm = TRUE`:
+
+``` r
+latex2r("\\bar{x} + \\tilde{y}")
+#> [1] "mean(x) + median(y)"
+latex2r("\\bar{x} + \\tilde{y}", na.rm = TRUE)
+#> [1] "mean(x, na.rm = TRUE) + median(y, na.rm = TRUE)"
+```
+
+For windowed calculations, `\\sum_{k}^{}{x}` translates to
+`data.table::frollsum(x, k)`, a rolling sum of window `k`.
+
+``` r
+latex2r("\\sum_{3}^{}{x}")
+#> [1] "data.table::frollsum(((x)), 3)"
+```
+
+#### Unicode input (MathQuill and friends)
+
+Visual formula editors such as MathQuill emit raw Unicode characters
+instead of LaTeX commands. `latex2r()` normalizes them automatically
+before scanning: `−`, `–` and `—` become `-`; `×` becomes `\times`; `⋅`
+and `·` become `\cdot`; `÷` becomes `/`; Greek letters become the
+corresponding commands; and accented vowels such as `ā`, `ã` and `â`
+become `\bar{a}`, `\tilde{a}` and `\hat{a}` (other accents fall back to
+the base letter).
+
+``` r
+latex2r("2 × 3")
+#> [1] "2 * 3"
+latex2r("α + β")
+#> [1] "alpha + beta"
+normalize_mathquill("ā")
+#> [1] "\\bar{a}"
+```
+
+The `normalize_mathquill()` function is exported so the mapping can be
+inspected and reused.
+
+#### Inspecting the parsed expression
+
+`latex2ast()` runs the same pipeline as `latex2r()` but returns the
+parsed abstract syntax tree instead of the R translation, which is
+useful for debugging formulas.
+
+``` r
+latex2ast("\\bar{x}")
+#> <UnaryFun>
+#>   Inherits from: <Expr>
+#>   Public:
+#>     accept: function (visitor) 
+#>     arg: Variable, Expr, R6
+#>     clone: function (deep = FALSE) 
+#>     initialize: function (operator, arg) 
+#>     operator: mean
 ```
 
 ### Examples
 
 | LaTeX                                                          | R Code                                                           |
-| :------------------------------------------------------------- | :--------------------------------------------------------------- |
+|:---------------------------------------------------------------|:-----------------------------------------------------------------|
 | `x + y`                                                        | `x + y`                                                          |
 | `\sin(x) + \cos(y)`                                            | `sin(x) + cos(y)`                                                |
 | `\sin(x)^2 + \cos(y)^2`                                        | `sin(x)^2 + cos(y)^2`                                            |
 | `\sqrt{2x\pi}`                                                 | `sqrt(2 * x * pi)`                                               |
 | `\log(z)`                                                      | `log(z)`                                                         |
+| `\ln(z)`                                                       | `log(z)`                                                         |
 | `\log_a(\frac{x^5}{y})`                                        | `log((x^5) / y, base = a)`                                       |
 | `\frac{1}{\sigma\sqrt{2\pi}}e^{\frac{(x - \mu)^2}{2\sigma^2}}` | `1 / (sigma * sqrt(2 * pi)) * exp(((x - mu)^2) / (2 * sigma^2))` |
 | `\beta_1^{\frac{x+1}{x^2 \cdot y}}`                            | `beta_1^((x + 1) / (x^2 * y))`                                   |
+| `\bar{x}`                                                      | `mean(x)`                                                        |
+| `\tilde{x}`                                                    | `median(x)`                                                      |
+| `\left|x + y\right|`                                           | `abs(x + y)`                                                     |
+| `\sum_{3}^{}{x}`                                               | `data.table::frollsum(x, 3)`                                     |

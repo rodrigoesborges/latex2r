@@ -42,6 +42,7 @@ KEYWORDS = list(
   '\\frac' = 'FRAC',
   '\\sqrt' = 'SQRT',
   '\\log' = 'LOG',
+  '\\ln' = 'LOG',
   '\\cdot' = 'STAR',
   '\\times' = 'STAR',
   '\\sin' = 'SIN',
@@ -52,6 +53,7 @@ KEYWORDS = list(
   '\\tanh' = 'TANH',
   '\\bar' = 'MEAN',
   '\\overline' = 'MEAN',
+  '\\tilde' = 'MEDIAN',
   '\\sum' = 'ROLLSUM'
 )
 
@@ -67,10 +69,11 @@ KEYWORDS_LEXEMES = list(
   'COSH' = 'cosh',
   'TANH' = 'tanh',
   'MEAN' = 'mean',
+  'MEDIAN' = 'median',
   'ROLLSUM' = 'data.table::frollsum'
 )
 
-UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH','MEAN')
+UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH', 'MEAN', 'MEDIAN')
 
 pkg_data = list(
   'GREEK_KEYWORDS' = GREEK_KEYWORDS,

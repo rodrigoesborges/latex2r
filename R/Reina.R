@@ -1,3 +1,6 @@
+#' @importFrom R6 R6Class
+NULL
+
 # About the shared environment:
 # https://stackoverflow.com/questions/44961211/using-r6-how-do-i-find-classes-and-objects-that-inherit-from-some-superclass
 Reina = R6::R6Class("Reina",
@@ -16,8 +19,8 @@ Reina = R6::R6Class("Reina",
       }
     },
 
-    run_line = function(line) {
-      result = self$run(line)
+    run_line = function(line, na.rm = FALSE) {
+      result = self$run(line, na.rm)
       if (self$shared_env$had_error) {
         self$shared_env$had_error = FALSE
         return(invisible(NULL))
@@ -34,14 +37,14 @@ Reina = R6::R6Class("Reina",
       }
     },
 
-    run = function(source) {
-      scanner = Scanner$new(source)
+    run = function(source, na.rm = FALSE) {
+      scanner = Scanner$new(normalize_mathquill(source))
       tokens = scanner$scan_tokens()
       if (!is.null(tokens)) {
         parser = Parser$new(tokens)
         expr = parser$parse()
         if (self$shared_env$had_error) return(invisible(NULL))
-        RPrinter$new()$print(expr)
+        RPrinter$new(na.rm = na.rm)$print(expr)
       }
     },
 

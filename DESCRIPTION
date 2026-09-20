@@ -1,6 +1,6 @@
 Package: latexr
 Title: Translate Latex Formulas to R Code
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 
     c(
       person(given = "Rodrigo",

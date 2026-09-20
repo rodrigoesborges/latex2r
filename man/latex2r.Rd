@@ -4,12 +4,15 @@
 \alias{latex2r}
 \title{Translate LaTeX formula to R code.}
 \usage{
-latex2r(x, interactive = FALSE)
+latex2r(x, interactive = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{x}{string}
 
 \item{interactive}{boolean}
+
+\item{na.rm}{boolean; when \code{TRUE}, calls to \code{mean()} and \code{median()} are
+emitted with \code{na.rm = TRUE}.}
 }
 \value{
 string
@@ -20,4 +23,5 @@ If \code{interactive=TRUE} it pops up an interactive REPL that does the same, bu
 }
 \examples{
 latex2r("\\\\beta_1^{\\\\frac{x+1}{x^2 \\\\cdot y}}")
+latex2r("\\\\bar{x}", na.rm = TRUE)
 }

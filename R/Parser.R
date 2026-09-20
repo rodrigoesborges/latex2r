@@ -81,7 +81,7 @@ Parser = R6::R6Class("Parser",
 
     implicit_multiplication = function() {
       skip = c('MINUS', 'PLUS', 'STAR', 'SLASH', 'CARET', 'UNDERSCORE',
-               'RIGHT_PAREN', 'RIGHT_BRACE', 'EQUAL')
+               'RIGHT_PAREN', 'RIGHT_BRACE', 'RIGHT_ABS', 'EQUAL')
       (!self$check(skip)) && !self$is_at_end()
     },
 
@@ -267,6 +267,17 @@ Parser = R6::R6Class("Parser",
         return(expr)
       }
 
+      if (self$match('LEFT_ABS')) {
+        expr = self$addition()
+        self$consume('RIGHT_ABS', "Expect '\\right|' after expression.")
+        expr = UnaryFun$new('abs', expr)
+        if (self$implicit_multiplication()) {
+          right = self$addition()
+          return(Binary$new(expr, Token$new('STAR', '*'), right))
+        }
+        return(expr)
+      }
+
       if (self$match('LEFT_PAREN')) {
         expr = self$addition()
         self$consume('RIGHT_PAREN', "Expect ')' after expression.")
@@ -315,7 +326,9 @@ Parser = R6::R6Class("Parser",
         self$consume('RIGHT_BRACE', "Expect '}' after expression")
         self$consume('CARET', "Expect '^' between expressions")
         self$consume('LEFT_BRACE', "Expect '{' after ROLLSUM{}_.")
-        expr3 = self$addition()
+        # The exponent group is parsed for notation compatibility but discarded.
+        # It is allowed to be empty, as in "\sum_{k}^{}{x}".
+        if (!self$check('RIGHT_BRACE')) self$addition()
         self$consume('RIGHT_BRACE', "Expect '}' after expression")
         expr1 = self$addition()
         if (!inherits(expr1, c("Unary", "Literal", "Variable"))) {
