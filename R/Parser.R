@@ -15,7 +15,11 @@ Parser = R6::R6Class("Parser",
 
     parse = function() {
       tryCatch({
-        self$expression()
+        expr = self$expression()
+        if (!self$is_at_end()) {
+          self$parse_error("Expect end of expression after the parsed one.")
+        }
+        expr
       },
       parse_error = function(cnd) {
         super$shared_env$had_error = TRUE

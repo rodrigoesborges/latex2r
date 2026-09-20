@@ -40,7 +40,7 @@ test_that("trig functions work", {
 
 test_that("sqrt works", {
   expect_equal(latex2r("\\sqrt(x)"), latex2r("\\sqrt{x}"))
-  expect_equal(latex2r("\\sqrt(x^2 + 2*x*y + y^2)}"), "sqrt(x^2 + 2 * x * y + y^2)")
+  expect_equal(latex2r("\\sqrt(x^2 + 2*x*y + y^2)"), "sqrt(x^2 + 2 * x * y + y^2)")
 })
 
 test_that("latex binary functions work", {
