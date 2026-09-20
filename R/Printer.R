@@ -66,6 +66,10 @@ RPrinter = R6::R6Class(
       self$format(mode = "binary", expr)
     },
 
+    visitFunctionBinExpr = function(expr) {
+      paste0(expr$funct$lexeme,"(", expr$first$accept(self), ", ", gsub("[^[:digit:]]","",expr$second$accept(self)), ")")
+    },
+
     visitUnaryExpr = function(expr) {
       self$format(mode = "unary", expr)
     },

@@ -69,3 +69,21 @@ test_that("implicit multiplication - sqrt and log", {
   expect_equal(latex2r("\\sqrt(x+y)\\log(z+z)\\sqrt(5)"), "sqrt(x + y) * log(z + z) * sqrt(5)")
 })
 
+test_that("mean works", {
+  expect_equal(latex2r("\\bar{x}"), "mean(x)")
+  expect_equal(latex2r("\\overline{y}"), "mean(y)")
+  expect_equal(latex2r("\\bar{x}*\\overline{y}"), "mean(x) * mean(y)")
+})
+
+test_that("rolling sum works", {
+  expect_equal(latex2r("\\sum_{3}^{2}x"), "data.table::frollsum(x, 3)")
+  expect_equal(latex2r("\\sum_{12}^{2}{a+b}"), "data.table::frollsum(((a + b)), 12)")
+  expect_equal(latex2r("\\sum_{3}^{2}{x}y"), "data.table::frollsum(((x)), 3) * y")
+  expect_equal(latex2r("\\bar{x}*\\overline{y}+\\sum_{3}^{2}x"), "mean(x) * mean(y) + data.table::frollsum(x, 3)")
+})
+
+test_that("rolling sum rejects bad syntax", {
+  expect_error(latex2r("\\sum_{3}x"), class = "latex2r.error")
+  expect_error(latex2r("\\sum3^2x"), class = "latex2r.error")
+})
+

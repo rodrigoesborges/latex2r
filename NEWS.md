@@ -1,3 +1,30 @@
+# latexr (development version)
+
+## Renaming
+
+* The package was renamed from `latex2r` to `latexr`. The public API is unchanged:
+  the main functions are still `latex2r()` and `latex2fun()`, and errors are still
+  raised as conditions of class `latex2r.error`.
+
+## New features
+
+* `\bar{x}` and `\overline{x}` now translate to `mean(x)` (consolidated from the
+  `mean` branch).
+* Rolling sums: `\sum_{k}^{}{x}` translates to `data.table::frollsum(x, k)`
+  (consolidated from the `arithmean`/`rollsumsigma` branches). The exponent group
+  after `^` is parsed for notation compatibility but ignored.
+* Fixed a crash when implicit multiplication followed a braced rolling-sum
+  operand (e.g. `\sum_{3}^{2}{x}y`).
+* Fixed `stop_custom()` conditions not inheriting from class `"error"`, which made
+  errors raised by `latex2r()` impossible to catch with `tryCatch(error = ...)` and
+  aborted non-interactive sessions. `tryCatch(..., class = "latex2r.error")` and
+  `expect_error(class = "latex2r.error")` now work as documented.
+
+## Authors
+
+* Rodrigo Borges <rodrigo@borges.net.br> is now the creator and maintainer.
+  Tomas Capretto remains author and contributor.
+
 # latex2r 0.2.0
 
 ## Maintenance and fixes

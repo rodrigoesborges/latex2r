@@ -22,7 +22,7 @@ stop_custom = function(.subclass, message, call = NULL, ...) {
       call = call,
       ...
     ),
-    class = c(.subclass, "condition")
+    class = c(.subclass, "error", "condition")
   )
   stop(err)
 }
@@ -51,7 +51,8 @@ KEYWORDS = list(
   '\\cosh' = 'COSH',
   '\\tanh' = 'TANH',
   '\\bar' = 'MEAN',
-  '\\overline' = 'MEAN'
+  '\\overline' = 'MEAN',
+  '\\sum' = 'ROLLSUM'
 )
 
 KEYWORDS_LEXEMES = list(
@@ -65,7 +66,8 @@ KEYWORDS_LEXEMES = list(
   'SINH' = 'sinh',
   'COSH' = 'cosh',
   'TANH' = 'tanh',
-  'MEAN' = 'mean'
+  'MEAN' = 'mean',
+  'ROLLSUM' = 'data.table::frollsum'
 )
 
 UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH','MEAN')

@@ -1,9 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# latex2r
+# latexr
 
-The goal of latex2r is to translate LaTeX formulas to R code.
+The goal of latexr is to translate LaTeX formulas to R code. (Formerly
+known as `latex2r`; the main function is still `latex2r()`.)
 
 ## Installation
 
@@ -12,7 +13,7 @@ You can install the development version from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("tomicapretto/latex2r")
+devtools::install_github("rodrigoesborges/latex2r")
 ```
 
 This is a very young package so it may not work as expected if you try
@@ -25,7 +26,7 @@ it.
 Just some basic funcionality: translate LaTeX to R.
 
 ``` r
-library(latex2r)
+library(latexr)
 latex2r("\\beta_1^{\\frac{x+1}{x^2 \\cdot y}}")
 #> [1] "beta_1^((x + 1) / (x^2 * y))"
 ```
@@ -76,7 +77,7 @@ The following greek letters are supported as identifiers (variable
 names).
 
 ``` r
-latex2r:::get_pkg_data('GREEK_KEYWORDS')
+latexr:::get_pkg_data('GREEK_KEYWORDS')
 #>  [1] "\\alpha"      "\\theta"      "\\tau"        "\\beta"       "\\vartheta"  
 #>  [6] "\\pi"         "\\upsilon"    "\\gamma"      "\\varpi"      "\\phi"       
 #> [11] "\\delta"      "\\kappa"      "\\rho"        "\\varphi"     "\\epsilon"   
