@@ -12,6 +12,11 @@
 
 ## Comments
 
+- Resubmission after reviewer feedback: software names ('LaTeX', 'MathQuill')
+  are now single-quoted in the Title and Description, and a method reference
+  (Nystrom (2021) <https://craftinginterpreters.com/>) was added to the
+  Description.
+
 - This package translates LaTeX formulas into R code strings; it does not
   evaluate them. For rolling-sum notation it emits `data.table::frollsum()`
   as text, so `data.table` is intentionally not a dependency.
