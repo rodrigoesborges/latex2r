@@ -22,7 +22,7 @@ stop_custom = function(.subclass, message, call = NULL, ...) {
       call = call,
       ...
     ),
-    class = c(.subclass, "condition")
+    class = c(.subclass, "error", "condition")
   )
   stop(err)
 }
@@ -42,6 +42,7 @@ KEYWORDS = list(
   '\\frac' = 'FRAC',
   '\\sqrt' = 'SQRT',
   '\\log' = 'LOG',
+  '\\ln' = 'LOG',
   '\\cdot' = 'STAR',
   '\\times' = 'STAR',
   '\\sin' = 'SIN',
@@ -51,7 +52,9 @@ KEYWORDS = list(
   '\\cosh' = 'COSH',
   '\\tanh' = 'TANH',
   '\\bar' = 'MEAN',
-  '\\overline' = 'MEAN'
+  '\\overline' = 'MEAN',
+  '\\tilde' = 'MEDIAN',
+  '\\sum' = 'ROLLSUM'
 )
 
 KEYWORDS_LEXEMES = list(
@@ -65,10 +68,12 @@ KEYWORDS_LEXEMES = list(
   'SINH' = 'sinh',
   'COSH' = 'cosh',
   'TANH' = 'tanh',
-  'MEAN' = 'mean'
+  'MEAN' = 'mean',
+  'MEDIAN' = 'median',
+  'ROLLSUM' = 'data.table::frollsum'
 )
 
-UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH','MEAN')
+UNARY_FNS = c('SQRT', 'LOG', 'SIN', 'COS', 'TAN', 'SINH', 'COSH', 'TANH', 'MEAN', 'MEDIAN')
 
 pkg_data = list(
   'GREEK_KEYWORDS' = GREEK_KEYWORDS,

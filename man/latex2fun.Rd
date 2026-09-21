@@ -4,12 +4,15 @@
 \alias{latex2fun}
 \title{Construct R function from LaTeX expression.}
 \usage{
-latex2fun(latex_string, envir = parent.frame())
+latex2fun(latex_string, envir = parent.frame(), na.rm = FALSE)
 }
 \arguments{
 \item{latex_string}{string}
 
 \item{envir}{environment}
+
+\item{na.rm}{boolean; when \code{TRUE}, calls to \code{mean()} and \code{median()} are
+emitted with \code{na.rm = TRUE}.}
 }
 \value{
 function

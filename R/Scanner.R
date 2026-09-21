@@ -118,6 +118,11 @@ Scanner = R6::R6Class("Scanner",
     },
 
     latex = function() {
+      # Thin space commands such as "\;", "\," and "\:" are ignored.
+      if (self$peek() %in% c(';', ',', ':')) {
+        self$advance()
+        return(NULL)
+      }
       if (self$peek() == ' ') {
         return(NULL)
       }
@@ -126,6 +131,9 @@ Scanner = R6::R6Class("Scanner",
       }
 
       text = substr(self$source, self$start, self$current - 1)
+      if (text %in% c("\\quad", "\\qquad")) {
+        return(NULL)
+      }
       if (text %in% c("\\left", "\\right")) {
         self$latex_delimiters(text)
         return(NULL)
@@ -160,6 +168,9 @@ Scanner = R6::R6Class("Scanner",
         } else if (self$peek() == '{') {
           self$advance()
           self$add_token('LEFT_BRACE')
+        } else if (self$peek() == '|') {
+          self$advance()
+          self$add_token('LEFT_ABS')
         } else {
           self$error("Unrecognized latex character.")
         }
@@ -173,6 +184,9 @@ Scanner = R6::R6Class("Scanner",
         } else if (self$peek() == '}') {
           self$advance()
           self$add_token('RIGHT_BRACE')
+        } else if (self$peek() == '|') {
+          self$advance()
+          self$add_token('RIGHT_ABS')
         } else {
           self$error("Unrecognized latex character.")
         }

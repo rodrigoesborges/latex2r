@@ -42,7 +42,11 @@ AstPrinter = R6::R6Class(
 RPrinter = R6::R6Class(
   classname = "RPrinter",
   public = list(
-    initialize = function() {},
+    na.rm = FALSE,
+
+    initialize = function(na.rm = FALSE) {
+      self$na.rm = na.rm
+    },
 
     print = function(expr) {
       expr$accept(self)
@@ -66,11 +70,18 @@ RPrinter = R6::R6Class(
       self$format(mode = "binary", expr)
     },
 
+    visitFunctionBinExpr = function(expr) {
+      paste0(expr$funct$lexeme,"(", expr$first$accept(self), ", ", gsub("[^[:digit:]]","",expr$second$accept(self)), ")")
+    },
+
     visitUnaryExpr = function(expr) {
       self$format(mode = "unary", expr)
     },
 
     visitUnaryFunExpr = function(expr) {
+      if (self$na.rm && expr$operator %in% c("mean", "median")) {
+        return(paste0(expr$operator, "(", expr$arg$accept(self), ", na.rm = TRUE)"))
+      }
       paste0(expr$operator, "(", expr$arg$accept(self), ")")
     },
 

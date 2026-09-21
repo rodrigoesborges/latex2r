@@ -15,7 +15,11 @@ Parser = R6::R6Class("Parser",
 
     parse = function() {
       tryCatch({
-        self$expression()
+        expr = self$expression()
+        if (!self$is_at_end()) {
+          self$parse_error("Expect end of expression after the parsed one.")
+        }
+        expr
       },
       parse_error = function(cnd) {
         super$shared_env$had_error = TRUE
@@ -77,7 +81,7 @@ Parser = R6::R6Class("Parser",
 
     implicit_multiplication = function() {
       skip = c('MINUS', 'PLUS', 'STAR', 'SLASH', 'CARET', 'UNDERSCORE',
-               'RIGHT_PAREN', 'RIGHT_BRACE', 'EQUAL')
+               'RIGHT_PAREN', 'RIGHT_BRACE', 'RIGHT_ABS', 'EQUAL')
       (!self$check(skip)) && !self$is_at_end()
     },
 
@@ -263,6 +267,17 @@ Parser = R6::R6Class("Parser",
         return(expr)
       }
 
+      if (self$match('LEFT_ABS')) {
+        expr = self$addition()
+        self$consume('RIGHT_ABS', "Expect '\\right|' after expression.")
+        expr = UnaryFun$new('abs', expr)
+        if (self$implicit_multiplication()) {
+          right = self$addition()
+          return(Binary$new(expr, Token$new('STAR', '*'), right))
+        }
+        return(expr)
+      }
+
       if (self$match('LEFT_PAREN')) {
         expr = self$addition()
         self$consume('RIGHT_PAREN', "Expect ')' after expression.")
@@ -296,6 +311,33 @@ Parser = R6::R6Class("Parser",
           expr2 = Grouping$new(expr2)
         }
         expr = Binary$new(expr1, Token$new('FRAC', '/', NULL), expr2)
+        if (self$implicit_multiplication()) {
+          right = self$addition()
+          return(Binary$new(expr, Token$new('STAR', '*'), right))
+        }
+        return(expr)
+      }
+
+      if (self$match('ROLLSUM')) {
+        # Kind of a hack. I should use more elegant ways if possible.
+        self$consume('UNDERSCORE', "Expect '_' after ROLLSUM.")
+        self$consume('LEFT_BRACE', "Expect '{' after ROLLSUM_.")
+        expr2 = self$addition()
+        self$consume('RIGHT_BRACE', "Expect '}' after expression")
+        self$consume('CARET', "Expect '^' between expressions")
+        self$consume('LEFT_BRACE', "Expect '{' after ROLLSUM{}_.")
+        # The exponent group is parsed for notation compatibility but discarded.
+        # It is allowed to be empty, as in "\sum_{k}^{}{x}".
+        if (!self$check('RIGHT_BRACE')) self$addition()
+        self$consume('RIGHT_BRACE', "Expect '}' after expression")
+        expr1 = self$addition()
+        if (!inherits(expr1, c("Unary", "Literal", "Variable"))) {
+          expr1 = Grouping$new(expr1)
+        }
+        if (!inherits(expr2, c("Unary", "Literal", "Variable"))) {
+          expr2 = Grouping$new(expr2)
+        }
+        expr = FunctionBinary$new(Token$new('ROLLSUM', 'data.table::frollsum',T),expr1, expr2)
         if (self$implicit_multiplication()) {
           right = self$addition()
           return(Binary$new(expr, Token$new('STAR', '*'), right))

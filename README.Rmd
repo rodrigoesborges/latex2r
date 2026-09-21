@@ -13,9 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# latex2r
+# latexr
 
-The goal of latex2r is to translate LaTeX formulas to R code.
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/rodrigoesborges/latexr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rodrigoesborges/latexr/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+The goal of latexr is to translate LaTeX formulas to R code. (Formerly known as `latex2r`; the main function is still `latex2r()`.)
 
 ## Installation
 
@@ -23,7 +27,7 @@ You can install the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("tomicapretto/latex2r")
+devtools::install_github("rodrigoesborges/latexr")
 ```
 
 This is a very young package so it may not work as expected if you try to translate
@@ -32,9 +36,9 @@ section for more information about it.
 
 ## Examples
 
-Just some basic funcionality: translate LaTeX to R.
+Just some basic functionality: translate LaTeX to R.
 ```{r example}
-library(latex2r)
+library(latexr)
 latex2r("\\beta_1^{\\frac{x+1}{x^2 \\cdot y}}")
 ```
 
@@ -67,15 +71,15 @@ use interactively.
 
 ## Supported LaTeX
 
-Only a small subset of LaTeX expressions are suported so far. However,
+Only a small subset of LaTeX expressions are supported so far. However,
 these are enough to define a very wide set of mathematical functions. 
 
 ### Greek letters supported
 
-The following greek letters are supported as identifiers (variable names).
+The following Greek letters are supported as identifiers (variable names).
 
 ```{r}
-latex2r:::get_pkg_data('GREEK_KEYWORDS')
+latexr:::get_pkg_data('GREEK_KEYWORDS')
 ```
 
 ### Syntax supported
@@ -88,14 +92,20 @@ You can use the following operators
   + `+`, `-`, `*`, `/`, `^`, and `_`.
 * Grouping:
   + `{...}`, `\left{...\right}`, `(...)`, and `\left(...\right)`.
+* Absolute value:
+  + `\left|x\right|`.
 
 And the following functions
 
 * Unary:
-  + `\sqrt`, `\log`, `\sin`, `\cos`, `\tan`, `\cosh`, `\sinh`, and `\tanh`.
+  + `\sqrt`, `\log`, `\ln`, `\sin`, `\cos`, `\tan`, `\cosh`, `\sinh`, and `\tanh`.
+  + Statistical: `\bar{x}` and `\overline{x}` (mean), and `\tilde{x}` (median).
   
 * Binary:
   + `\frac{...}{...}`, `\cdot`, and `\times`.
+  + Rolling sum: `\sum_{k}^{}{x}` translates to `data.table::frollsum(x, k)`.
+
+Spacing commands (`\;`, `\,`, `\:`, `\quad`, `\qquad`) are ignored.
 
 #### Notes
 
@@ -113,7 +123,7 @@ not allowed in this package (at least for now). To represent a p-th root you can
 
 A previous version of this package required multiplication to be explicit. 
 For example, `xy` would have been understood as an identifier called `xy`. 
-Now, all identifiers, except from special ones (greek letters), are of one character 
+Now, all identifiers, except from special ones (Greek letters), are of one character 
 only. If you do `abc^5` it will be understood as `a*b*c^5`.
 
 In addition, you can still pass an explicit multiplication operator such as `*`,
@@ -149,10 +159,58 @@ But note that complex numbers are not supported (yet?).
 
 If you write `\\log(x)` it will be interpreted as the natural logarithm of `x`.
 If you write `\\log_n(x)` it will be interpreted as the logarithm of `x` with base `n`.
+The alias `\\ln(x)` also works.
 
 ```{r}
 latex2r("\\log(x + 1)")
 latex2r("\\log_2(x + 1)")
+latex2r("\\ln(x + 1)")
+```
+
+#### Statistical notation
+
+`\\bar{x}` and `\\overline{x}` translate to `mean(x)`, and `\\tilde{x}`
+translates to `median(x)`. Since real data often contains missing values,
+both accept `na.rm = TRUE`:
+
+```{r}
+latex2r("\\bar{x} + \\tilde{y}")
+latex2r("\\bar{x} + \\tilde{y}", na.rm = TRUE)
+```
+
+For windowed calculations, `\\sum_{k}^{}{x}` translates to
+`data.table::frollsum(x, k)`, a rolling sum of window `k`.
+
+```{r}
+latex2r("\\sum_{3}^{}{x}")
+```
+
+#### Unicode input (MathQuill and friends)
+
+Visual formula editors such as MathQuill emit raw Unicode characters instead
+of LaTeX commands. `latex2r()` normalizes them automatically before scanning:
+`−`, `–` and `—` become `-`; `×` becomes `\times`; `⋅` and `·` become `\cdot`;
+`÷` becomes `/`; Greek letters become the corresponding commands; and accented
+vowels such as `ā`, `ã` and `â` become `\bar{a}`, `\tilde{a}` and `\hat{a}`
+(other accents fall back to the base letter).
+
+```{r}
+latex2r("2 × 3")
+latex2r("α + β")
+normalize_mathquill("ā")
+```
+
+The `normalize_mathquill()` function is exported so the mapping can be
+inspected and reused.
+
+#### Inspecting the parsed expression
+
+`latex2ast()` runs the same pipeline as `latex2r()` but returns the parsed
+abstract syntax tree instead of the R translation, which is useful for
+debugging formulas.
+
+```{r}
+latex2ast("\\bar{x}")
 ```
 
 ### Examples
@@ -176,6 +234,11 @@ knitr::kable(data)
 |`\sin(x)^2 + \cos(y)^2 `                                       |`sin(x)^2 + cos(y)^2 `                                           |
 |`\sqrt{2x\pi} `                                                |`sqrt(2 * x * pi) `                                              |
 |`\log(z)`                                                      |`log(z)`                                                         |
+|`\ln(z)`                                                       |`log(z)`                                                         |
 |`\log_a(\frac{x^5}{y})`                                        |`log((x^5) / y, base = a) `                                      |
 |`\frac{1}{\sigma\sqrt{2\pi}}e^{\frac{(x - \mu)^2}{2\sigma^2}}` |`1 / (sigma * sqrt(2 * pi)) * exp(((x - mu)^2) / (2 * sigma^2))` |
 |`\beta_1^{\frac{x+1}{x^2 \cdot y}}`                            |`beta_1^((x + 1) / (x^2 * y))`                                   |
+|`\bar{x}`                                                      |`mean(x)`                                                        |
+|`\tilde{x}`                                                    |`median(x)`                                                      |
+|`\left|x + y\right|`                                           |`abs(x + y)`                                                     |
+|`\sum_{3}^{}{x}`                                               |`data.table::frollsum(x, 3)`                                     |

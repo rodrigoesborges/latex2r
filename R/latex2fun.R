@@ -54,6 +54,8 @@ new_function = function(args, body, envir = parent.frame()) {
 #'
 #' @param latex_string string
 #' @param envir environment
+#' @param na.rm boolean; when `TRUE`, calls to `mean()` and `median()` are
+#'   emitted with `na.rm = TRUE`.
 #'
 #' @return function
 #' @export
@@ -63,9 +65,10 @@ new_function = function(args, body, envir = parent.frame()) {
 #' f = latex2fun("\\sin{x * a}")
 #' f_x = f(x = x, a = 2)
 #' plot(x, f_x, type = "l")
-latex2fun = function(latex_string, envir = parent.frame()) {
-  fun_body = latex2r(latex_string)
-  if (grepl("=", fun_body)) {
+latex2fun = function(latex_string, envir = parent.frame(), na.rm = FALSE) {
+  fun_body = latex2r(latex_string, na.rm = na.rm)
+  body_expr = parse(text = fun_body)[[1]]
+  if (is.call(body_expr) && as.character(body_expr[[1]]) %in% c("=", "<-")) {
     stop_custom("latex2r.error", "Expression contains assignment.")
   }
   fun_args = get_args(fun_body)

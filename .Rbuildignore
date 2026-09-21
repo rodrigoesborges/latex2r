@@ -1,4 +1,8 @@
-^latex2r\.Rproj$
+^latexr\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
+^AGENTS\.md$
+^\.crush$
+^\.github$
+^cran-comments\.md$

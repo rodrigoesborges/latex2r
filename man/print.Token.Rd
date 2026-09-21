@@ -2,10 +2,18 @@
 % Please edit documentation in R/Token.R
 \name{print.Token}
 \alias{print.Token}
-\title{Print Token}
+\title{Print a Token object.}
 \usage{
-\method{print}{Token}(x)
+\method{print}{Token}(x, ...)
+}
+\arguments{
+\item{x}{A \code{Token} object.}
+
+\item{...}{Further arguments passed to or from other methods.}
+}
+\value{
+The string representation of the token, invisibly.
 }
 \description{
-Print Token
+Print a Token object.
 }

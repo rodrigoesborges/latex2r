@@ -1,24 +1,32 @@
-Package: latex2r
-Title: Translate Latex Formulas to R Code
-Version: 0.2.0
+Package: latexr
+Title: Translate LaTeX Formulas to R Code
+Version: 0.3.0
 Authors@R: 
-    person(given = "Tomas",
-           family = "Capretto",
-           role = c("aut", "cre"),
-           email = "tomicapretto@gmail.com")
-Description: This package implements a minimal LaTeX parser that is used to translate
-    LaTeX formulas to R code.
+    c(
+      person(given = "Rodrigo",
+             family = "Borges",
+             role = c("aut", "cre"),
+             email = "rodrigo@borges.net.br"),
+      person(given = "Tomas",
+             family = "Capretto",
+             role = c("aut", "ctb"),
+             email = "tomicapretto@gmail.com")
+    )
+Description: Implements a minimal LaTeX parser that translates mathematical formulas
+    into R code strings. Supports arithmetic operators, implicit multiplication,
+    fractions, Greek letters, common mathematical functions, and statistical
+    notation for means, medians, and rolling sums. Input from visual formula
+    editors such as MathQuill is normalized automatically, and the resulting
+    string can be evaluated with parse() and eval(), or converted into an R
+    function with latex2fun().
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
 Imports: 
     R6 (>= 2.4.0),
     purrr (>= 0.3.0)
 Suggests: 
     testthat
-URL: https://github.com/tomicapretto/latex2r
-BugReports: https://github.com/tomicapretto/latex2r/issues
-Depends: 
-    R (>= 2.10)
+URL: https://github.com/rodrigoesborges/latexr
+BugReports: https://github.com/rodrigoesborges/latexr/issues
